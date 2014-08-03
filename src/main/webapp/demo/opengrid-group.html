@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Complex OpenGrid - jQuery OpenGrid Demo</title>
+	<link rel="stylesheet" type="text/css" href="../opengrid/css/opengrid.css">
+	<script type="text/javascript" src="../common-resources/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="../common-resources/utils.js"></script>
+	<script type="text/javascript" src="../opengrid/js/jquery.opengrid.js"></script>
+	<script type="text/javascript" src="basic_data.js"></script>
+	<script>
+		$(function(){
+			$('#test').opengrid({
+				/* width:700, */
+				height:400,
+				striped: true, //隔行变色
+				url:'../getdata1.do',
+				data:basic_data,
+				pagination:{
+					pageSize : 10,
+					pageNo : 1,
+					orderBy:'age'
+				},
+				remoteSort: false,
+				groupBy:'name,attr4,attr1',
+				idField:'id',
+				frozenColumns:[],
+				columns:[[
+				          {field:'xh',title:'序号',width:'40',nowrap:true,type:'rownumber',rowspan:3},
+				          {field:'',title:'基本信息',width:'40',nowrap:true,type:'',colspan:4},
+				          {field:'attr10',title:'列10',width:'80',nowrap:true,type:'',editor:'text',rowspan:3},
+				          {field:'addr',title:'Address',width:'',minWidth:100,editor:'text',rowspan:3},
+				          {field:'attr4',title:'列4',width:'80',minWidth:80,editor:'text',rowspan:3},
+				          {field:'attr5',title:'列5',width:'80',minWidth:80,editor:'text',rowspan:3},
+				          {field:'attr6',title:'列6',width:'80',minWidth:80,editor:'text',rowspan:3},
+				          {field:'',title:'其它',width:'100',minWidth:100,editor:'text',colspan:5}
+				          ],
+				          [{field:'',title:'基本信息1',width:'40',nowrap:true,type:'',colspan:2},
+				           {field:'xh2',title:'序号',width:'40',nowrap:true,editor:'text',type:'name_grownumber',
+				        	   rowspan:2},
+				           {field:'age',title:'年龄',width:'50',nowrap:true,editor:'text',type:'',rowspan:2,sortable:true},
+				           {field:'xh3',title:'序号',width:'40',editor:'text',nowrap:true,type:'attr1_rownumber',rowspan:2},
+				           {field:'attr1',title:'列1',width:'80',nowrap:true,type:'',rowspan:2},
+				           {field:'xh4',title:'序号',width:'40',nowrap:true,editor:'text',type:'attr1_grownumber',
+				        	   rowspan:2},
+				           {field:'attr2',title:'列2',width:'80',nowrap:true,type:'',rowspan:2},
+				           {field:'attr3',title:'列3',width:'80',nowrap:true,type:'',rowspan:2}
+				          ],
+				         [
+						{field:'xh5',title:'序号',width:'40',editor:'text',nowrap:true,type:'name_rownumber'},
+						{field:'name',title:'Name',width:'100',editor:'text',nowrap:true}
+						]]
+			});
+		});
+		
+		function add(){
+			var index = 0;
+			$('#test').opengrid("insertRow",index,{});
+			$('#test').opengrid('selectRow',index);
+			$('#test').opengrid('beginEdit',index);
+
+		}
+		function edit(){
+			$('#test').opengrid("beginEdit",getSelectedIndex()||0);
+		}
+		
+		function getSelectedIndex(){
+			var row = $('#test').opengrid('getSelections')[0];
+			var index = $('#test').opengrid('getRowIndex', row);
+			return index;
+		}
+		function save(){
+			var row = $('#test').opengrid('getSelections')[0];
+			var index = $('#test').opengrid('getRowIndex', row);
+			$('#test').opengrid("endEdit",index);
+		}
+		function del(){
+			$('#test').opengrid("deleteRow",1);
+		}
+		function cl(){
+			$('#test').opengrid("cancelEdit",1);
+		}
+		function resize(){
+			$('#test').opengrid('resize', {
+				width:700,
+				height:400
+			});
+		}
+		function getSelections(){
+			var ids = [];
+			var rows = $('#test').opengrid('getSelections');
+			for(var i=0;i<rows.length;i++){
+				ids.push(rows[i].id);
+			}
+			alert(ids.join(':'));
+		}
+		function clearSelections(){
+			$('#test').opengrid('unselectAll');
+		}
+		function selectRow(){
+			$('#test').opengrid('selectRow',2);
+		}
+		function unselectRow(){
+			$('#test').opengrid('unselectRow',2);
+		}
+		function mergeCells(){
+			$('#test').opengrid('mergeCells',{
+				index:2,
+				field:'addr',
+				rowspan:2,
+				colspan:5
+			});
+		}
+		
+		function goPage(page){
+			/* $('#test').opengrid("load",{
+				
+			}); */
+			var page = 100;
+			$('#test').opengrid("goPage",page);
+		}
+		function first(){
+			$('#test').opengrid("firstPage");
+		}
+		function pre(){
+			$('#test').opengrid("prePage");
+		}
+		function next(){
+			$('#test').opengrid("nextPage");
+		}
+		function last(){
+			$('#test').opengrid("lastPage");
+		}
+		
+		
+	</script>
+</head>
+<body>
+	<div class="demo-info">
+		<div class="demo-tip icon-tip"><a href="../index.jsp"><<返回首页</a></div>
+		<div>Click the button to do actions with opengrid.</div>
+	</div>
+	
+	<div style="margin:10px 0;">
+		<a href="#" onclick="add()">Add</a>
+		<a href="#" onclick="edit()">Edit</a>
+		<a href="#" onclick="del()">Delete</a>
+		<a href="#" onclick="save()">save</a>
+		<a href="#" onclick="cl()">cancel</a>
+		<a href="#" onclick="getSelections()">GetSelections</a>
+		<a href="#" onclick="selectRow()">SelectRow</a>
+		<a href="#" onclick="unselectRow()">UnselectRow</a>
+		<a href="#" onclick="clearSelections()">ClearSelections</a>
+		<a href="#" onclick="resize()">Resize</a>
+		<a href="#" onclick="mergeCells()">MergeCells</a>
+	</div>
+	
+	
+	<div style="margin: 20px;"><table id="test"></table></div>
+	
+	<div style="margin:10px 0;">
+		<a href="#" onclick="first()">first</a>
+		<a href="#" onclick="pre()">pre</a>
+		<a href="#" onclick="next()">next</a>
+		<a href="#" onclick="last()">last</a>
+		<a href="#" onclick="goPage(9)">goto 9 page</a>
+	</div>
+</body>
+</html>

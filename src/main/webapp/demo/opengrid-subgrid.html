@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Complex OpenGrid - jQuery OpenGrid Demo</title>
+	<link rel="stylesheet" type="text/css" href="../opengrid/css/opengrid.css">
+	<script type="text/javascript" src="../common-resources/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="../common-resources/utils.js"></script>
+	<script type="text/javascript" src="../opengrid/js/jquery.opengrid.js"></script>
+	<script type="text/javascript" src="basic_data.js"></script>
+	<script>
+		$(function(){
+			$('#test').opengrid({
+				iconCls:'icon-save',
+				/* width:700, */
+				height:400,
+				autoRowHeight: false,
+				striped: true, //隔行变色
+				url:'../getdata1.do',
+				data:basic_data,
+				pagination:{
+					pageSize : 10,
+					pageNo : 1,
+					orderBy:'age'
+				},
+				remoteSort: false,
+			  	/* fitColumns:true, */  
+				idField:'id',
+				frozenColumns:[[{field:'rownumber',title:'序号',width:'40',nowrap:true,type:'rownumber',rowspan:2},
+				                {field:'ck',title:'',width:'40',nowrap:true,type:'checkbox',rowspan:2,align:'center'},
+				                {field:'type',title:'',width:'40',nowrap:true,type:'rowlink',url:'../getchildren.do',
+				                	rule:function(val,row,index){
+				                		return val=='1';
+					                },
+					                onBeforeLoad:function(queryParams,row){
+					                	queryParams["condition.id"] = row.id;
+					                },
+				                /* loader:function(queryParams,url, successCallback, errorCallback){
+				                	
+				                }, */
+				                rowspan:2,align:'center' },
+				            	{field:'',title:'基本信息',width:'40',nowrap:true,type:'',colspan:2}],
+				            	[
+				                 {field:'id',title:'ID',width:'100',editor:'text',nowrap:true},
+								{field:'name',title:'Name',width:'100',editor:'text',nowrap:true}
+				            	 ]
+				            	],
+				columns:[
+				          [{field:'age',title:'年龄',width:'auto',nowrap:true,type:'',sortable:true,align:'center',
+				        	  halign:'center',
+				        	  formatter:function(val, row, rowIndex){
+				        		  return val+'岁';
+				        	  }
+				          },
+				           {field:'addr',title:'Address',width:'',minWidth:200,editor:'text'},
+				           {field:'attr1',title:'列1',width:'150',nowrap:true,type:''},
+				           {field:'attr2',title:'列2',width:'150',nowrap:true,type:''},
+				           {field:'attr3',title:'列3',width:'150',nowrap:true,type:''},
+				           {field:'attr4',title:'列3',width:'150',nowrap:true,type:''},
+				           {field:'attr5',title:'列3',width:'100',nowrap:true,type:''},
+				           {field:'attr6',title:'列3',width:'100',nowrap:true,type:''},
+				           {field:'attr7',title:'列3',width:'100',nowrap:true,type:''},
+				           {field:'attr7',title:'列3',width:'100',nowrap:true,type:''}
+				          ]
+				        ],
+				        onLoadSuccess : function(rows){
+				        	var opts = this.options;
+				        	var dc = this.dc;
+				        	dc.body1.find(".opengrid-rowlink").click(function(){
+				        		var $a = $(this);
+				        		if($a.is(".opengrid-rowlink-contraction")){
+				        			//收缩
+				        			
+				        		}else{
+				        			
+				        		}
+				        	});
+				        }
+			});
+		});
+		
+		function add(){
+			var index = 0;
+			$('#test').opengrid("insertRow",index,{});
+			$('#test').opengrid('selectRow',index);
+			$('#test').opengrid('beginEdit',index);
+
+		}
+		function edit(){
+			$('#test').opengrid("beginEdit",getSelectedIndex()||0);
+		}
+		
+		function getSelectedIndex(){
+			var row = $('#test').opengrid('getSelections')[0];
+			var index = $('#test').opengrid('getRowIndex', row);
+			return index;
+		}
+		function save(){
+			var row = $('#test').opengrid('getSelections')[0];
+			var index = $('#test').opengrid('getRowIndex', row);
+			$('#test').opengrid("endEdit",index);
+		}
+		function del(){
+			$('#test').opengrid("deleteRow",1);
+		}
+		function cl(){
+			$('#test').opengrid("cancelEdit",1);
+		}
+		function resize(){
+			$('#test').opengrid('resize', {
+				width:700,
+				height:400
+			});
+		}
+		function getSelections(){
+			var ids = [];
+			var rows = $('#test').opengrid('getSelections');
+			for(var i=0;i<rows.length;i++){
+				ids.push(rows[i].id);
+			}
+			alert(ids.join(':'));
+		}
+		function clearSelections(){
+			$('#test').opengrid('unselectAll');
+		}
+		function selectRow(){
+			$('#test').opengrid('selectRow',2);
+		}
+		function unselectRow(){
+			$('#test').opengrid('unselectRow',2);
+		}
+		function mergeCells(){
+			$('#test').opengrid('mergeCells',{
+				index:2,
+				field:'addr',
+				rowspan:2,
+				colspan:5
+			});
+		}
+		
+		function goPage(page){
+			/* $('#test').opengrid("load",{
+				
+			}); */
+			var page = 100;
+			$('#test').opengrid("goPage",page);
+		}
+		function first(){
+			$('#test').opengrid("firstPage");
+		}
+		function pre(){
+			$('#test').opengrid("prePage");
+		}
+		function next(){
+			$('#test').opengrid("nextPage");
+		}
+		function last(){
+			$('#test').opengrid("lastPage");
+		}
+		
+		
+	</script>
+</head>
+<body>
+	<div class="demo-info">
+		<div class="demo-tip icon-tip"><a href="../index.jsp"><<返回首页</a></div>
+		<div>Click the button to do actions with opengrid.</div>
+	</div>
+	
+	<div style="margin:10px 0;">
+		<a href="#" onclick="add()">Add</a>
+		<a href="#" onclick="edit()">Edit</a>
+		<a href="#" onclick="del()">Delete</a>
+		<a href="#" onclick="save()">save</a>
+		<a href="#" onclick="cl()">cancel</a>
+		<a href="#" onclick="getSelections()">GetSelections</a>
+		<a href="#" onclick="selectRow()">SelectRow</a>
+		<a href="#" onclick="unselectRow()">UnselectRow</a>
+		<a href="#" onclick="clearSelections()">ClearSelections</a>
+		<a href="#" onclick="resize()">Resize</a>
+		<a href="#" onclick="mergeCells()">MergeCells</a>
+	</div>
+	
+	
+	<div style="margin: 20px;"><table id="test"></table></div>
+	
+	<div style="margin:10px 0;">
+		<a href="#" onclick="first()">first</a>
+		<a href="#" onclick="pre()">pre</a>
+		<a href="#" onclick="next()">next</a>
+		<a href="#" onclick="last()">last</a>
+		<a href="#" onclick="goPage(9)">goto 9 page</a>
+	</div>
+</body>
+</html>

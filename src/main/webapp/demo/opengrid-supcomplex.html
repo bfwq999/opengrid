@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Complex OpenGrid - jQuery OpenGrid Demo</title>
+	<link rel="stylesheet" type="text/css" href="../opengrid/css/opengrid.css">
+	<script type="text/javascript" src="../common-resources/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="../common-resources/utils.js"></script>
+	<script type="text/javascript" src="../opengrid/js/jquery.opengrid.js"></script>
+	<script type="text/javascript" src="data1.js"></script>
+	<script>
+		$(function(){
+			$("#test").opengrid({
+				height:400,
+				striped: true, //隔行变色
+				/* url:'../getdata1.do', */
+				pagination:{
+					pageSize : 10,
+					pageNo : 1,
+					orderBy:'applynum asc'
+				},
+				remoteSort: false,
+				idField:'id',
+				data: data||[],
+				columnOptions:{
+					sortable:true,
+					type:'number',
+					nowrap:true
+				},
+				frozenColumns:[[{field:'rownumber',title:'序号',width:'40',type:'rownumber',rowspan:2,sortable:false},
+							       {field:'short_name',title:'委办局',width:'auto',nowrap:false,rowspan:2,sortable:false}]],
+				columns:[
+				      [
+				       {field:'applynum',title:'申请数',width:'60',minWidth:50,nowrap:false,type:'number',rowspan:2},
+				       {field:'acceptedNum',title:'受理数',width:'50',nowrap:false,rowspan:2},
+				       {field:'warning_rate',title:'办结数',colspan:6},
+						{field:'acceptedRate',title:'受理率',width:'80',nowrap:false,rowspan:2},
+						{field:'passedRate',title:'办结率',width:'80',nowrap:false,rowspan:2},
+						{field:'warningNUM',title:'预警次数',width:'80',nowrap:false,rowspan:2},
+						{field:'warningRate',title:'预警率',width:'80',nowrap:false,rowspan:2},
+				       	{field:'',title:'问题',colspan:7},
+						{field:'problemInstanceNum',title:'存在问题申报数</br>（问题件数）',width:'85',nowrap:false,rowspan:2},
+						{field:'problemRate',title:'存在问题申报占受理总数比例',width:'120',nowrap:false,rowspan:2}
+				       ],
+				       [ 
+						{field:'passedNum',title:'通过',width:'60'},
+						{field:'vetoNum',title:'不通过',width:'60'},
+						{field:'refusedNum',title:'不受理',width:'60'},
+						{field:'stoppedNum',title:'用户终止',width:'60'},
+						{field:'overtimeNum',title:'超时申报',width:'60'},
+						{field:'invalidNum',title:'无效申报',width:'60'},
+						{field:'timeoutaNum',title:'超法定时限数',width:'60'},
+						{field:'timeoutbNum',title:'超承诺时限数',width:'60'},
+						{field:'timeoutcNum',title:'超本单位时限数',width:'60'},
+						{field:'exceedNum',title:'越权数',width:'85'},
+						{field:'jumpNum',title:'跳跃<br>&nbsp;环节',width:'85'},
+						{field:'telloutNum',title:'多次告知',width:'85'},
+						{field:'problemNum',title:'问题总数</br>(问题次数)',width:'85'}
+				         ]
+				]
+			});
+		});
+		
+		function add(){
+			var index = 0;
+			$('#test').opengrid("insertRow",index,{});
+			$('#test').opengrid('selectRow',index);
+			$('#test').opengrid('beginEdit',index);
+
+		}
+		function edit(){
+			$('#test').opengrid("beginEdit",getSelectedIndex()||0);
+		}
+		
+		function getSelectedIndex(){
+			var row = $('#test').opengrid('getSelections')[0];
+			var index = $('#test').opengrid('getRowIndex', row);
+			return index;
+		}
+		function save(){
+			var row = $('#test').opengrid('getSelections')[0];
+			var index = $('#test').opengrid('getRowIndex', row);
+			$('#test').opengrid("endEdit",index);
+		}
+		function del(){
+			$('#test').opengrid("deleteRow",1);
+		}
+		function cl(){
+			$('#test').opengrid("cancelEdit",1);
+		}
+		function resize(){
+			$('#test').opengrid('resize', {
+				width:700,
+				height:400
+			});
+		}
+		function getSelections(){
+			var ids = [];
+			var rows = $('#test').opengrid('getSelections');
+			for(var i=0;i<rows.length;i++){
+				ids.push(rows[i].id);
+			}
+			alert(ids.join(':'));
+		}
+		function clearSelections(){
+			$('#test').opengrid('unselectAll');
+		}
+		function selectRow(){
+			$('#test').opengrid('selectRow',2);
+		}
+		function unselectRow(){
+			$('#test').opengrid('unselectRow',2);
+		}
+		function mergeCells(){
+			$('#test').opengrid('mergeCells',{
+				index:2,
+				field:'addr',
+				rowspan:2,
+				colspan:5
+			});
+		}
+		
+		function goPage(page){
+			/* $('#test').opengrid("load",{
+				
+			}); */
+			var page = 100;
+			$('#test').opengrid("goPage",page);
+		}
+		function first(){
+			$('#test').opengrid("firstPage");
+		}
+		function pre(){
+			$('#test').opengrid("prePage");
+		}
+		function next(){
+			$('#test').opengrid("nextPage");
+		}
+		function last(){
+			$('#test').opengrid("lastPage");
+		}
+		
+		
+	</script>
+</head>
+<body>
+	<div class="demo-info">
+		<div class="demo-tip icon-tip"><a href="../index.jsp"><<返回首页</a></div>
+		<div>Click the button to do actions with opengrid.</div>
+	</div>
+	
+	<div style="margin:10px 0;">
+<!-- 		<a href="#" onclick="add()">Add</a>
+		<a href="#" onclick="edit()">Edit</a>
+		<a href="#" onclick="del()">Delete</a>
+		<a href="#" onclick="save()">save</a>
+		<a href="#" onclick="cl()">cancel</a>
+		<a href="#" onclick="getSelections()">GetSelections</a>
+		<a href="#" onclick="selectRow()">SelectRow</a>
+		<a href="#" onclick="unselectRow()">UnselectRow</a>
+		<a href="#" onclick="clearSelections()">ClearSelections</a>
+		<a href="#" onclick="resize()">Resize</a>
+		<a href="#" onclick="mergeCells()">MergeCells</a>
+ -->	</div>
+	
+	
+	<div style="margin: 20px;"><table id="test"></table></div>
+	
+	<div style="margin:10px 0;">
+		<a href="#" onclick="first()">first</a>
+		<a href="#" onclick="pre()">pre</a>
+		<a href="#" onclick="next()">next</a>
+		<a href="#" onclick="last()">last</a>
+		<a href="#" onclick="goPage(9)">goto 9 page</a>
+	</div>
+</body>
+</html>
